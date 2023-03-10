@@ -58,31 +58,3 @@ func connectToDB() (db *sql.DB, err error) {
 	}
 	return db, nil
 }
-
-// * Query Functions
-
-func QueryMeals() (resp string, err error) {
-
-	db, err := connectToDB()
-	if err != nil {
-		log.Error(err)
-		return "", err
-	}
-	defer db.Close()
-
-	queryString := `SELECT mealsAsJSON();`
-	rows, err := db.Query(queryString)
-	if err != nil {
-		log.Error(err)
-		return "", err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		err = rows.Scan(&resp)
-		if err != nil {
-			log.Error(err)
-			return "", err
-		}
-	}
-	return resp, nil
-}
