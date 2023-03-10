@@ -44,7 +44,7 @@ services:
     secrets:
       - db-api
     environment:
-      - PHASE=Development
+      - STAGE=Development
     env_file: ./configs/api/config.env
     depends_on: 
        db:

@@ -34,7 +34,7 @@ services:
     secrets:
       - db-api
     environment:
-      - PHASE=Production
+      - STAGE=Production
     env_file: ./configs/api/config.env
     depends_on: 
        db:

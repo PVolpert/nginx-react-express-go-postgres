@@ -28,7 +28,7 @@ func main() {
 }
 
 func setLog() {
-	phase := env.Get("PHASE", "Production")
+	phase := env.Get("STAGE", "Production")
 	log.SetReportCaller(true)
 	switch phase {
 	case "Production":
