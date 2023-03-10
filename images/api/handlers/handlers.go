@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	// "api/db"
 	"api/db"
 	"api/env"
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func setCORSHeader(w *http.ResponseWriter) {
@@ -42,15 +44,19 @@ Hello from Docker!
 
 }
 
-func GetMealsHandler(w http.ResponseWriter, r *http.Request) {
-	query, err := db.QueryMeals()
-	if err != nil || !json.Valid([]byte(query)) {
-		log.Error(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Internal Server Error"))
-		return
+// Returns a Handler function that writes the output of the query given that it is json
+func buildPureQueryHandler(query func() (resp string, err error)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		query, err := query()
+		if err != nil || !json.Valid([]byte(query)) {
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Internal Server Error"))
+			return
+		}
+		setJSONHeader(&w)
+		w.Write([]byte(query))
 	}
-
-	setJSONHeader(&w)
-	w.Write([]byte(query))
 }
+
+var GetMealsHandler = buildPureQueryHandler(db.QueryMeals)
