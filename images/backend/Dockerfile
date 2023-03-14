@@ -28,3 +28,13 @@ EOF
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
 CMD [ "npm", "run", "dev" ]
+
+FROM node:alpine
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app/package.json
+COPY package-lock.json /usr/src/app/package-lock.json
+COPY --from=builder /usr/src/app/build ./build
+
+RUN npm ci --production
+
+CMD ["npm", "run", "start"]

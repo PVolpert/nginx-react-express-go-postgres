@@ -43,7 +43,6 @@ services:
   backend:
     build: 
       context: images/backend
-      target: builder
     restart: always
     networks:
       - client-side
